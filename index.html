@@ -365,6 +365,8 @@
 
     <!-- Scripts JS -->
     <script>
+        const URL_DO_POWER_AUTOMATE = "https://default26eea9b411fb44af853cdb8d126485.29.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/23/workflows/f35038152fcd413191d44e74e4cbba62/triggers/manual/paths/invoke?api-version=1";
+
         const STORAGE_KEY = 'painel_atendimento_registros_v2';
         const SENHA_MESTRE = 'admin123';
         
@@ -402,7 +404,7 @@
             }
         }
 
-        function handleFormSubmit(event, tipo) {
+async function handleFormSubmit(event, tipo) {
             event.preventDefault();
 
             let novoRegistro = {
@@ -420,6 +422,7 @@
                 novoRegistro.nome = document.getElementById('nome-sugerente').value || 'Não informado';
                 novoRegistro.email = document.getElementById('email-sugerente').value || 'Não informado';
                 novoRegistro.telefone = document.getElementById('tel-sugerente').value || 'Não informado';
+                novoRegistro.alguem = 'Não se aplica'; // Preenche o campo para o Power Automate não falhar
             } else {
                 const selectLocal = document.getElementById('local-elogio').value;
                 const customLocal = document.getElementById('custom-local-elogio').value;
@@ -432,14 +435,30 @@
                 novoRegistro.telefone = document.getElementById('tel-elogiador').value || 'Não informado';
             }
 
+            // Salva no navegador local (continua funcionando no painel admin)
             registros.unshift(novoRegistro);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
             
+            // Exibe o modal de sucesso para o visitante
+            abrirModalSucesso(tipo);
+
+            // Envia os dados automaticamente para a Microsoft List via Power Automate em segundo plano
+            try {
+                await fetch(URL_DO_POWER_AUTOMATE, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(novoRegistro)
+                });
+            } catch (error) {
+                console.error('Erro ao enviar para o Power Automate:', error);
+            }
+
+            // Limpa o formulário
             document.getElementById(`form-${tipo}`).reset();
             document.getElementById(`custom-lugar-sugestao`).classList.add('hidden');
             document.getElementById(`custom-local-elogio`).classList.add('hidden');
-
-            abrirModalSucesso(tipo);
         }
 
         function abrirModalSucesso(tipo) {
