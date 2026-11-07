@@ -38,16 +38,6 @@
             font-family: 'Inter', sans-serif;
             background-color: #F8FAFC;
         }
-        .tab-btn.active {
-            background-color: #3D1E6D;
-            color: #FFFFFF;
-            box-shadow: 0 4px 6px -1px rgba(61, 30, 109, 0.3);
-        }
-        .tab-btn.active-elogio {
-            background-color: #059669;
-            color: #FFFFFF;
-            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
-        }
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -71,7 +61,6 @@
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
         <div class="max-w-4xl mx-auto px-4 py-6 sm:py-8 relative z-10 text-center">
             <div class="flex flex-col items-center justify-center gap-3">
-                <!-- LOGO DO PARQUE: Substitua 'logo.png' pelo nome do arquivo da sua logo -->
                 <div class="h-16 flex items-center justify-center overflow-hidden">
                     <img src="logo.png" alt="Animália Park" class="max-h-full w-auto object-contain drop-shadow">
                 </div>
@@ -83,172 +72,21 @@
         </div>
     </header>
 
-    <!-- Conteúdo Principal (Visão do Visitante) -->
+    <!-- Conteúdo Principal (Formulário Oficial Incorporado via Forms) -->
     <main class="flex-grow max-w-3xl w-full mx-auto px-4 py-8">
-        
-        <!-- Card do Formulário -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-            
-            <!-- Alternador de Modos (Tabs) -->
-            <div class="p-2 bg-slate-100 border-b border-slate-200 flex rounded-t-2xl gap-2">
-                <button id="tab-sugerir" onclick="switchTab('sugerir')" class="tab-btn active flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer">
-                    <i class="fa-regular fa-lightbulb text-base"></i>
-                    <span>Fazer Sugestão</span>
-                </button>
-                <button id="tab-elogiar" onclick="switchTab('elogiar')" class="tab-btn flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer">
-                    <i class="fa-regular fa-heart text-base"></i>
-                    <span>Fazer Elogio</span>
-                </button>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden p-4 sm:p-6">
+            <div class="border-b border-slate-100 pb-4 mb-4">
+                <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-brand-accent"></span>
+                    Canal Oficial de Atendimento
+                </h2>
+                <p class="text-xs text-slate-500 mt-1">Preencha os campos abaixo para registrar sua sugestão ou elogio.</p>
             </div>
 
-            <!-- Formulário Sugerir -->
-            <form id="form-sugerir" onsubmit="handleFormSubmit(event, 'sugerir')" class="p-6 sm:p-8 space-y-6">
-                <div class="border-b border-slate-100 pb-3">
-                    <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-brand-accent"></span>
-                        Registrar Nova Sugestão
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1">Ajude-nos a melhorar nossos serviços com suas ideias.</p>
-                </div>
-
-                <!-- Dados Pessoais do Visitante -->
-                <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200/60 space-y-4">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Seus Dados</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="sm:col-span-2">
-                            <label for="nome-sugerente" class="block text-xs font-medium text-slate-700 mb-1">Nome Completo</label>
-                            <input type="text" id="nome-sugerente" placeholder="Ex: Maria Silva" class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-brand-accent p-3 outline-none">
-                        </div>
-                        <div>
-                            <label for="email-sugerente" class="block text-xs font-medium text-slate-700 mb-1">E-mail (opcional)</label>
-                            <input type="email" id="email-sugerente" placeholder="Ex: maria@email.com" class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-brand-accent p-3 outline-none">
-                        </div>
-                        <div>
-                            <label for="tel-sugerente" class="block text-xs font-medium text-slate-700 mb-1">Telefone (Opcional)</label>
-                            <input type="tel" id="tel-sugerente" placeholder="Ex: (11) 99999-9999" class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-brand-accent p-3 outline-none">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Lugar da sugestão -->
-                <div>
-                    <label for="lugar-sugestao" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                        Lugar da sugestão <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <select id="lugar-sugestao" required onchange="toggleCustomInput('lugar-sugestao', 'custom-lugar-sugestao')" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-brand-accent focus:border-brand-accent p-3.5 pr-10 appearance-none transition-all outline-none">
-                            <option value="" disabled selected>Selecione o local...</option>
-                            <option value="Reserva">Reserva (zoologico)</option>
-                            <option value="Diversão">Diversão (brinquedos e atrações)</option>
-                            <option value="Recepção">Recepção (atendimento)</option>
-                            <option value="AB">Alimentos e Bebidas</option>
-                            <option value="Lojas">Lojas Souvenir</option>
-                            <option value="Estacionamento">Estacionamento</option>
-                            <option value="Limpeza">Limpeza</option>
-                            <option value="Outro">Outro (Especificar)</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                            <i class="fa-solid fa-chevron-down text-xs"></i>
-                        </div>
-                    </div>
-                    <input type="text" id="custom-lugar-sugestao" placeholder="Digite o local personalizado..." class="hidden mt-2.5 w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-brand-accent p-3.5 outline-none transition-all">
-                </div>
-
-                <!-- Qual melhoria você deseja -->
-                <div>
-                    <label for="descricao-sugestao" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                        Qual melhoria você deseja? <span class="text-red-500">*</span>
-                    </label>
-                    <textarea id="descricao-sugestao" required rows="4" placeholder="Descreva em detalhes a sua ideia de melhoria ou alteração..." class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-brand-accent p-3.5 outline-none transition-all resize-none"></textarea>
-                </div>
-
-                <!-- Botão de Envio -->
-                <button type="submit" class="w-full bg-brand-dark hover:bg-brand-main text-white font-semibold py-3.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer">
-                    <span>Enviar Sugestão</span>
-                    <i class="fa-solid fa-paper-plane text-xs transition-transform group-hover:translate-x-1"></i>
-                </button>
-            </form>
-
-            <!-- Formulário Elogiar (Inicialmente Oculto) -->
-            <form id="form-elogiar" onsubmit="handleFormSubmit(event, 'elogiar')" class="hidden p-6 sm:p-8 space-y-6">
-                <div class="border-b border-slate-100 pb-3">
-                    <h2 class="text-lg font-bold text-emerald-800 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        Registrar Novo Elogio
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1">Reconheça bons momentos e colaboradores que fizeram a diferença.</p>
-                </div>
-
-                <!-- Dados Pessoais do Visitante -->
-                <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200/60 space-y-4">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Seus Dados</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="sm:col-span-2">
-                            <label for="nome-elogiador" class="block text-xs font-medium text-slate-700 mb-1">Nome Completo</label>
-                            <input type="text" id="nome-elogiador" placeholder="Ex: João Pereira" class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 p-3 outline-none">
-                        </div>
-                        <div>
-                            <label for="email-elogiador" class="block text-xs font-medium text-slate-700 mb-1">E-mail (opcional)</label>
-                            <input type="email" id="email-elogiador" placeholder="Ex: joao@email.com" class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 p-3 outline-none">
-                        </div>
-                        <div>
-                            <label for="tel-elogiador" class="block text-xs font-medium text-slate-700 mb-1">Telefone (Opcional)</label>
-                            <input type="tel" id="tel-elogiador" placeholder="Ex: (11) 99999-9999" class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 p-3 outline-none">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Local do elogio -->
-                <div>
-                    <label for="local-elogio" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                        Local do elogio <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <select id="local-elogio" required onchange="toggleCustomInput('local-elogio', 'custom-local-elogio')" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 p-3.5 pr-10 appearance-none transition-all outline-none">
-                            <option value="" disabled selected>Selecione o local...</option>
-                            <option value="Reserva">Reserva (zoologico)</option>
-                            <option value="Diversão">Diversão (brinquedos e atrações)</option>
-                            <option value="Recepção">Recepção (atendimento)</option>
-                            <option value="AB">Alimentos e Bebidas</option>
-                            <option value="Lojas">Lojas Souvenir</option>
-                            <option value="Estacionamento">Estacionamento</option>
-                            <option value="Limpeza">Limpeza</option>
-                            <option value="Outro">Outro (Especificar)</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                            <i class="fa-solid fa-chevron-down text-xs"></i>
-                        </div>
-                    </div>
-                    <input type="text" id="custom-local-elogio" placeholder="Digite o local personalizado..." class="hidden mt-2.5 w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 p-3.5 outline-none transition-all">
-                </div>
-
-                <!-- Identificar alguém -->
-                <div>
-                    <label for="identificar-alguem" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                        Identificar alguém <span class="text-slate-400 font-normal lowercase">(colaborador ou equipe)</span>
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-user-tag text-sm"></i>
-                        </div>
-                        <input type="text" id="identificar-alguem" placeholder="Ex: Carlos do Atendimento, Equipe de Limpeza..." class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 p-3.5 pl-10 outline-none transition-all">
-                    </div>
-                </div>
-
-                <!-- Descreva o ocorrido -->
-                <div>
-                    <label for="descricao-elogio" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                        Descreva o ocorrido <span class="text-red-500">*</span>
-                    </label>
-                    <textarea id="descricao-elogio" required rows="4" placeholder="Conte-nos em detalhes a sua experiência positiva..." class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 p-3.5 outline-none transition-all resize-none"></textarea>
-                </div>
-
-                <!-- Botão de Envio -->
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer">
-                    <span>Enviar Elogio</span>
-                    <i class="fa-solid fa-heart text-xs transition-transform group-hover:scale-110"></i>
-                </button>
-            </form>
+            <!-- Iframe Oficial do Microsoft Forms (Sem erros de autenticação) -->
+            <div class="w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                <iframe width="100%" height="700px" src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=tKnuJvsRr0SFPNuNEmSFKZaiYd61q4dEuugCAN5EddVUQzI2V1NCMEFPVldDTERaQTRZVzkxUDNGWC4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%;" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen></iframe>
+            </div>
         </div>
     </main>
 
@@ -263,20 +101,6 @@
         </div>
     </footer>
 
-    <!-- Modal de Sucesso (Visitante) -->
-    <div id="modal-sucesso" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl transform scale-90 transition-transform duration-300 border border-slate-100" id="modal-box">
-            <div id="modal-icon-container" class="w-16 h-16 rounded-full bg-purple-100 text-brand-main mx-auto flex items-center justify-center text-2xl mb-4">
-                <i id="modal-icon" class="fa-solid fa-check"></i>
-            </div>
-            <h3 id="modal-title" class="text-xl font-bold text-slate-800 mb-2">Mensagem Enviada!</h3>
-            <p id="modal-message" class="text-xs sm:text-sm text-slate-600 mb-6 leading-relaxed">Agradecemos a sua colaboração. Seus dados foram salvos com sucesso.</p>
-            <button onclick="fecharModalSucesso()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 rounded-xl shadow transition-all cursor-pointer text-sm">
-                Concluir
-            </button>
-        </div>
-    </div>
-
     <!-- Modal de Autenticação Admin -->
     <div id="modal-auth-admin" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
@@ -284,7 +108,7 @@
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
             <h3 class="text-lg font-bold text-slate-800 text-center mb-1">Acesso Administrativo</h3>
-            <p class="text-xs text-slate-500 text-center mb-5">Digite a senha do gestor para visualizar os registros.</p>
+            <p class="text-xs text-slate-500 text-center mb-5">Digite a senha do gestor para visualizar o painel.</p>
             
             <form onsubmit="autenticarAdmin(event)" class="space-y-4">
                 <div>
@@ -311,7 +135,7 @@
                     </div>
                     <div>
                         <h2 class="font-bold text-base sm:text-lg">Painel de Gestão de Atendimento</h2>
-                        <p class="text-xs text-purple-200 font-light">Visualização restrita das mensagens recebidas</p>
+                        <p class="text-xs text-purple-200 font-light">Sincronização com Microsoft List</p>
                     </div>
                 </div>
                 <button onclick="fecharPainelAdmin()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer">
@@ -319,181 +143,30 @@
                 </button>
             </div>
 
-            <!-- Toolbar Admin -->
-            <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                    <div class="bg-purple-100 text-brand-dark px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-lightbulb text-brand-accent"></i>
-                        <span>Sugestões: <strong id="admin-count-sugestoes">0</strong></span>
+            <!-- Corpo Informativo Admin -->
+            <div class="flex-grow overflow-y-auto p-6 custom-scrollbar bg-slate-100/50 flex items-center justify-center text-center">
+                <div class="max-w-md space-y-3">
+                    <div class="w-16 h-16 bg-purple-100 text-brand-main rounded-full flex items-center justify-center text-2xl mx-auto">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>
                     </div>
-                    <div class="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-heart text-emerald-600"></i>
-                        <span>Elogios: <strong id="admin-count-elogios">0</strong></span>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <div class="relative flex-grow sm:w-64">
-                        <input type="text" id="busca-admin" oninput="renderizarTabelaAdmin()" placeholder="Buscar por nome, local ou texto..." class="w-full bg-white border border-slate-300 text-slate-800 text-xs rounded-xl pl-8 pr-3 py-2 outline-none focus:ring-2 focus:ring-brand-accent">
-                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
-                    </div>
-                    <select id="filtro-tipo-admin" onchange="renderizarTabelaAdmin()" class="bg-white border border-slate-300 text-slate-800 text-xs rounded-xl p-2 outline-none focus:ring-2 focus:ring-brand-accent">
-                        <option value="todos">Todos os tipos</option>
-                        <option value="sugerir">Apenas Sugestões</option>
-                        <option value="elogiar">Apenas Elogios</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Corpo Tabela / Cards -->
-            <div class="flex-grow overflow-y-auto p-4 custom-scrollbar bg-slate-100/50">
-                <div id="container-tabela-admin" class="space-y-3">
-                    <!-- Registros injetados via JS -->
+                    <h3 class="font-bold text-slate-800 text-base">Gerenciamento via Microsoft List</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">Como as respostas do formulário agora caem automaticamente na sua Microsoft List de forma segura e sem barreiras de autenticação, você pode acompanhar, filtrar e exportar todos os dados diretamente pelo ambiente corporativo da Microsoft.</p>
                 </div>
             </div>
 
             <!-- Rodapé Admin -->
             <div class="p-4 bg-white border-t border-slate-200 flex items-center justify-between text-xs">
-                <span class="text-slate-400">Total de Registros: <strong id="total-registros-admin" class="text-slate-700">0</strong></span>
-                <button onclick="limparHistoricoAdmin()" class="text-red-600 hover:text-red-700 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors cursor-pointer">
-                    <i class="fa-solid fa-trash-can"></i>
-                    <span>Excluir Todos os Dados</span>
+                <span class="text-slate-400">Status: <strong class="text-emerald-600">Integrado com Microsoft Forms</strong></span>
+                <button onclick="fecharPainelAdmin()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer">
+                    Fechar Painel
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Scripts JS -->
+    <!-- Scripts de Controle do Modal Admin -->
     <script>
-        const URL_DO_POWER_AUTOMATE = "https://default26eea9b411fb44af853cdb8d126485.29.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/23/workflows/f35038152fcd413191d44e74e4cbba62/triggers/manual/paths/invoke?api-version=1";
-
-        const STORAGE_KEY = 'painel_atendimento_registros_v2';
         const SENHA_MESTRE = 'admin123';
-        
-        let registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-
-        function switchTab(tab) {
-            const tabSugerir = document.getElementById('tab-sugerir');
-            const tabElogiar = document.getElementById('tab-elogiar');
-            const formSugerir = document.getElementById('form-sugerir');
-            const formElogiar = document.getElementById('form-elogiar');
-
-            if (tab === 'sugerir') {
-                tabSugerir.className = 'tab-btn active flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer';
-                tabElogiar.className = 'tab-btn flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer';
-                formSugerir.classList.remove('hidden');
-                formElogiar.classList.add('hidden');
-            } else {
-                tabSugerir.className = 'tab-btn flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer';
-                tabElogiar.className = 'tab-btn active-elogio flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer';
-                formSugerir.classList.add('hidden');
-                formElogiar.classList.remove('hidden');
-            }
-        }
-
-        function toggleCustomInput(selectId, inputId) {
-            const select = document.getElementById(selectId);
-            const customInput = document.getElementById(inputId);
-
-            if (select.value === 'Outro') {
-                customInput.classList.remove('hidden');
-                customInput.setAttribute('required', 'required');
-            } else {
-                customInput.classList.add('hidden');
-                customInput.removeAttribute('required');
-            }
-        }
-
-async function handleFormSubmit(event, tipo) {
-            event.preventDefault();
-
-            let novoRegistro = {
-                id: Date.now(),
-                tipo: tipo,
-                data: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-            };
-
-            if (tipo === 'sugerir') {
-                const selectLugar = document.getElementById('lugar-sugestao').value;
-                const customLugar = document.getElementById('custom-lugar-sugestao').value;
-                
-                novoRegistro.local = selectLugar === 'Outro' ? customLugar : selectLugar;
-                novoRegistro.descricao = document.getElementById('descricao-sugestao').value;
-                novoRegistro.nome = document.getElementById('nome-sugerente').value || 'Não informado';
-                novoRegistro.email = document.getElementById('email-sugerente').value || 'Não informado';
-                novoRegistro.telefone = document.getElementById('tel-sugerente').value || 'Não informado';
-                novoRegistro.alguem = 'Não se aplica'; // Preenche o campo para o Power Automate não falhar
-            } else {
-                const selectLocal = document.getElementById('local-elogio').value;
-                const customLocal = document.getElementById('custom-local-elogio').value;
-
-                novoRegistro.local = selectLocal === 'Outro' ? customLocal : selectLocal;
-                novoRegistro.alguem = document.getElementById('identificar-alguem').value || 'Não especificado';
-                novoRegistro.descricao = document.getElementById('descricao-elogio').value;
-                novoRegistro.nome = document.getElementById('nome-elogiador').value || 'Não informado';
-                novoRegistro.email = document.getElementById('email-elogiador').value || 'Não informado';
-                novoRegistro.telefone = document.getElementById('tel-elogiador').value || 'Não informado';
-            }
-
-            // Salva no navegador local (continua funcionando no painel admin)
-            registros.unshift(novoRegistro);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
-            
-            // Exibe o modal de sucesso para o visitante
-            abrirModalSucesso(tipo);
-
-            // Envia os dados automaticamente para a Microsoft List via Power Automate em segundo plano
-            try {
-                await fetch(URL_DO_POWER_AUTOMATE, {
-                    method: 'POST',
-                    mode: 'no-cors', // Evita bloqueio de segurança no Navegador
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(novoRegistro)
-                });
-            } catch (error) {
-                console.error('Erro ao enviar para o Power Automate:', error);
-            }
-
-            // Limpa o formulário
-            document.getElementById(`form-${tipo}`).reset();
-            document.getElementById(`custom-lugar-sugestao`).classList.add('hidden');
-            document.getElementById(`custom-local-elogio`).classList.add('hidden');
-        }
-
-        function abrirModalSucesso(tipo) {
-            const modal = document.getElementById('modal-sucesso');
-            const modalBox = document.getElementById('modal-box');
-            const iconContainer = document.getElementById('modal-icon-container');
-            const icon = document.getElementById('modal-icon');
-            const title = document.getElementById('modal-title');
-            const message = document.getElementById('modal-message');
-
-            if (tipo === 'sugerir') {
-                iconContainer.className = 'w-16 h-16 rounded-full bg-purple-100 text-brand-main mx-auto flex items-center justify-center text-2xl mb-4';
-                icon.className = 'fa-solid fa-lightbulb';
-                title.innerText = 'Sugestão Recebida!';
-                message.innerText = 'Muito obrigado! Sua sugestão foi encaminhada diretamente para nossa equipe de gestão.';
-            } else {
-                iconContainer.className = 'w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center text-2xl mb-4';
-                icon.className = 'fa-solid fa-heart';
-                title.innerText = 'Elogio Registrado!';
-                message.innerText = 'Agradecemos o seu carinho e reconhecimento! Seu elogio foi enviado ao nosso time.';
-            }
-
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            modalBox.classList.remove('scale-90');
-            modalBox.classList.add('scale-100');
-        }
-
-        function fecharModalSucesso() {
-            const modal = document.getElementById('modal-sucesso');
-            const modalBox = document.getElementById('modal-box');
-            modalBox.classList.remove('scale-100');
-            modalBox.classList.add('scale-90');
-            modal.classList.add('opacity-0', 'pointer-events-none');
-        }
 
         function abrirModalAuthAdmin() {
             document.getElementById('erro-senha').classList.add('hidden');
@@ -511,117 +184,14 @@ async function handleFormSubmit(event, tipo) {
 
             if (senhaDigitada === SENHA_MESTRE) {
                 fecharModalAuthAdmin();
-                abrirPainelAdmin();
+                document.getElementById('modal-painel-admin').classList.remove('opacity-0', 'pointer-events-none');
             } else {
                 document.getElementById('erro-senha').classList.remove('hidden');
             }
         }
 
-        function abrirPainelAdmin() {
-            renderizarTabelaAdmin();
-            document.getElementById('modal-painel-admin').classList.remove('opacity-0', 'pointer-events-none');
-        }
-
         function fecharPainelAdmin() {
             document.getElementById('modal-painel-admin').classList.add('opacity-0', 'pointer-events-none');
-        }
-
-        function renderizarTabelaAdmin() {
-            const container = document.getElementById('container-tabela-admin');
-            const busca = document.getElementById('busca-admin').value.toLowerCase();
-            const filtroTipo = document.getElementById('filtro-tipo-admin').value;
-
-            const sugestoesCount = registros.filter(r => r.tipo === 'sugerir').length;
-            const elogiosCount = registros.filter(r => r.tipo === 'elogiar').length;
-
-            document.getElementById('admin-count-sugestoes').innerText = sugestoesCount;
-            document.getElementById('admin-count-elogios').innerText = elogiosCount;
-            document.getElementById('total-registros-admin').innerText = registros.length;
-
-            const filtrados = registros.filter(reg => {
-                const matchTipo = (filtroTipo === 'todos' || reg.tipo === filtroTipo);
-                const matchBusca = (
-                    reg.nome.toLowerCase().includes(busca) ||
-                    reg.local.toLowerCase().includes(busca) ||
-                    reg.descricao.toLowerCase().includes(busca) ||
-                    (reg.alguem && reg.alguem.toLowerCase().includes(busca))
-                );
-                return matchTipo && matchBusca;
-            });
-
-            if (filtrados.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 bg-white rounded-2xl border border-slate-200">
-                        <i class="fa-solid fa-folder-open text-3xl text-slate-300 mb-2"></i>
-                        <p class="text-sm text-slate-500 font-medium">Nenhum registro encontrado.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = filtrados.map(reg => {
-                const isSugestao = reg.tipo === 'sugerir';
-                const badgeColor = isSugestao ? 'bg-purple-100 text-brand-dark' : 'bg-emerald-100 text-emerald-800';
-                const iconType = isSugestao ? 'fa-lightbulb text-brand-accent' : 'fa-heart text-emerald-600';
-                
-                return `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow transition-shadow flex flex-col gap-3">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 ${badgeColor}">
-                                    <i class="fa-solid ${iconType}"></i>
-                                    ${isSugestao ? 'Sugestão' : 'Elogio'}
-                                </span>
-                                <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded-md">
-                                    <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> ${reg.local}
-                                </span>
-                            </div>
-                            <span class="text-[11px] text-slate-400 font-medium">
-                                <i class="fa-regular fa-clock mr-1"></i>${reg.data}
-                            </span>
-                        </div>
-
-                        <div class="text-xs sm:text-sm text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100/80 leading-relaxed">
-                            <strong class="text-slate-900 block mb-1 text-[11px] uppercase tracking-wider">Descrição:</strong>
-                            ${reg.descricao}
-                        </div>
-
-                        ${!isSugestao && reg.alguem && reg.alguem !== 'Não especificado' ? `
-                            <div class="text-xs text-emerald-700 bg-emerald-50/60 px-3 py-1.5 rounded-lg border border-emerald-100 flex items-center gap-1.5">
-                                <i class="fa-solid fa-user-tag text-emerald-500"></i>
-                                <span><strong>Colaborador(a) / Equipe:</strong> ${reg.alguem}</span>
-                            </div>
-                        ` : ''}
-
-                        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs text-slate-500">
-                            <div class="flex items-center gap-4">
-                                <span><i class="fa-solid fa-user text-slate-400 mr-1"></i><strong>${reg.nome}</strong></span>
-                                <span><i class="fa-solid fa-envelope text-slate-400 mr-1"></i>${reg.email}</span>
-                                <span><i class="fa-solid fa-phone text-slate-400 mr-1"></i>${reg.telefone}</span>
-                            </div>
-                            <button onclick="excluirRegistro(${reg.id})" class="text-red-500 hover:text-red-700 p-1 rounded transition-colors cursor-pointer" title="Excluir item">
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function excluirRegistro(id) {
-            if (confirm('Tem certeza que deseja excluir este registro?')) {
-                registros = registros.filter(r => r.id !== id);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
-                renderizarTabelaAdmin();
-            }
-        }
-
-        function limparHistoricoAdmin() {
-            if (confirm('ATENÇÃO: Deseja realmente apagar TODOS os registros salvos? Esta ação não pode ser desfeita.')) {
-                registros = [];
-                localStorage.removeItem(STORAGE_KEY);
-                renderizarTabelaAdmin();
-            }
         }
     </script>
 </body>
