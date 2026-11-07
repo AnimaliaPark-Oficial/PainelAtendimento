@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Atendimento - Sugestões e Elogios</title>
+    <title>SAV - Serviço de Atendimento ao Visitante | Animália Park</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
@@ -71,8 +71,9 @@
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
         <div class="max-w-4xl mx-auto px-4 py-6 sm:py-8 relative z-10 text-center">
             <div class="flex flex-col items-center justify-center gap-3">
-                <div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-3xl text-purple-300 shadow-inner">
-                    <i class="fa-solid fa-comments"></i>
+                <!-- LOGO DO PARQUE: Substitua 'logo.png' pelo nome do arquivo da sua logo -->
+                <div class="h-16 flex items-center justify-center overflow-hidden">
+                    <img src="logo.png" alt="Animália Park" class="max-h-full w-auto object-contain drop-shadow">
                 </div>
                 <div>
                     <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">SAV - Serviço de Atendimento ao Visitante</h1>
@@ -91,11 +92,11 @@
             <!-- Alternador de Modos (Tabs) -->
             <div class="p-2 bg-slate-100 border-b border-slate-200 flex rounded-t-2xl gap-2">
                 <button id="tab-sugerir" onclick="switchTab('sugerir')" class="tab-btn active flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer">
-                    <i class="fa-lightbulb fa-regular text-base"></i>
+                    <i class="fa-regular fa-lightbulb text-base"></i>
                     <span>Fazer Sugestão</span>
                 </button>
                 <button id="tab-elogiar" onclick="switchTab('elogiar')" class="tab-btn flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer">
-                    <i class="fa-heart fa-regular text-base"></i>
+                    <i class="fa-regular fa-heart text-base"></i>
                     <span>Fazer Elogio</span>
                 </button>
             </div>
@@ -141,7 +142,7 @@
                             <option value="Diversão">Diversão (brinquedos e atrações)</option>
                             <option value="Recepção">Recepção (atendimento)</option>
                             <option value="AB">Alimentos e Bebidas</option>
-                            <option value="Lojas">Loas Souvenir</option>
+                            <option value="Lojas">Lojas Souvenir</option>
                             <option value="Estacionamento">Estacionamento</option>
                             <option value="Limpeza">Limpeza</option>
                             <option value="Outro">Outro (Especificar)</option>
@@ -209,7 +210,7 @@
                             <option value="Diversão">Diversão (brinquedos e atrações)</option>
                             <option value="Recepção">Recepção (atendimento)</option>
                             <option value="AB">Alimentos e Bebidas</option>
-                            <option value="Lojas">Loas Souvenir</option>
+                            <option value="Lojas">Lojas Souvenir</option>
                             <option value="Estacionamento">Estacionamento</option>
                             <option value="Limpeza">Limpeza</option>
                             <option value="Outro">Outro (Especificar)</option>
@@ -254,7 +255,7 @@
     <!-- Rodapé com Link Discreto para Admin -->
     <footer class="bg-slate-100 border-t border-slate-200 py-6 mt-auto">
         <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© Painel de Atendimento — Todos os direitos reservados.</p>
+            <p>© Animália Park — Todos os direitos reservados.</p>
             <button onclick="abrirModalAuthAdmin()" class="flex items-center gap-1.5 text-slate-400 hover:text-brand-dark transition-colors cursor-pointer py-1 px-2 rounded hover:bg-slate-200/60">
                 <i class="fa-solid fa-lock text-[10px]"></i>
                 <span>Área Administrativa</span>
@@ -318,9 +319,8 @@
                 </button>
             </div>
 
-            <!-- Toolbar Admin (Filtros, Pesquisa e Métricas) -->
+            <!-- Toolbar Admin -->
             <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <!-- Métricas -->
                 <div class="flex items-center gap-3 w-full sm:w-auto">
                     <div class="bg-purple-100 text-brand-dark px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
                         <i class="fa-solid fa-lightbulb text-brand-accent"></i>
@@ -332,7 +332,6 @@
                     </div>
                 </div>
 
-                <!-- Filtros e Busca -->
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <div class="relative flex-grow sm:w-64">
                         <input type="text" id="busca-admin" oninput="renderizarTabelaAdmin()" placeholder="Buscar por nome, local ou texto..." class="w-full bg-white border border-slate-300 text-slate-800 text-xs rounded-xl pl-8 pr-3 py-2 outline-none focus:ring-2 focus:ring-brand-accent">
@@ -371,7 +370,6 @@
         
         let registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-        // Alternador de Abas
         function switchTab(tab) {
             const tabSugerir = document.getElementById('tab-sugerir');
             const tabElogiar = document.getElementById('tab-elogiar');
@@ -391,7 +389,6 @@
             }
         }
 
-        // Alternar Input Personalizado para "Outro"
         function toggleCustomInput(selectId, inputId) {
             const select = document.getElementById(selectId);
             const customInput = document.getElementById(inputId);
@@ -405,7 +402,6 @@
             }
         }
 
-        // Processar Envio do Visitante
         function handleFormSubmit(event, tipo) {
             event.preventDefault();
 
@@ -436,16 +432,13 @@
                 novoRegistro.telefone = document.getElementById('tel-elogiador').value || 'Não informado';
             }
 
-            // Salvar no array local e localStorage
             registros.unshift(novoRegistro);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
             
-            // Resetar formulário
             document.getElementById(`form-${tipo}`).reset();
             document.getElementById(`custom-lugar-sugestao`).classList.add('hidden');
             document.getElementById(`custom-local-elogio`).classList.add('hidden');
 
-            // Exibir Modal de Sucesso sem revelar os outros dados cadastrados
             abrirModalSucesso(tipo);
         }
 
@@ -482,24 +475,21 @@
             modal.classList.add('opacity-0', 'pointer-events-none');
         }
 
-        // --- ÁREA ADMINISTRATIVA ---
-
         function abrirModalAuthAdmin() {
             document.getElementById('erro-senha').classList.add('hidden');
             document.getElementById('senha-admin').value = '';
-            const modal = document.getElementById('modal-auth-admin');
-            modal.classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('modal-auth-admin').classList.remove('opacity-0', 'pointer-events-none');
         }
 
         function fecharModalAuthAdmin() {
-            const modal = document.getElementById('modal-auth-admin');
-            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('modal-auth-admin').classList.add('opacity-0', 'pointer-events-none');
         }
 
-        function autenticarAdmin(e) {
-            e.preventDefault();
-            const senha = document.getElementById('senha-admin').value;
-            if (senha === SENHA_MESTRE) {
+        function autenticarAdmin(event) {
+            event.preventDefault();
+            const senhaDigitada = document.getElementById('senha-admin').value;
+
+            if (senhaDigitada === SENHA_MESTRE) {
                 fecharModalAuthAdmin();
                 abrirPainelAdmin();
             } else {
@@ -509,82 +499,88 @@
 
         function abrirPainelAdmin() {
             renderizarTabelaAdmin();
-            const modal = document.getElementById('modal-painel-admin');
-            modal.classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('modal-painel-admin').classList.remove('opacity-0', 'pointer-events-none');
         }
 
         function fecharPainelAdmin() {
-            const modal = document.getElementById('modal-painel-admin');
-            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('modal-painel-admin').classList.add('opacity-0', 'pointer-events-none');
         }
 
         function renderizarTabelaAdmin() {
             const container = document.getElementById('container-tabela-admin');
+            const busca = document.getElementById('busca-admin').value.toLowerCase();
             const filtroTipo = document.getElementById('filtro-tipo-admin').value;
-            const termoBusca = document.getElementById('busca-admin').value.toLowerCase();
 
-            let filtrados = registros.filter(item => {
-                const bateTipo = filtroTipo === 'todos' || item.tipo === filtroTipo;
-                const bateBusca = item.local.toLowerCase().includes(termoBusca) ||
-                                 item.descricao.toLowerCase().includes(termoBusca) ||
-                                 item.nome.toLowerCase().includes(termoBusca) ||
-                                 (item.alguem && item.alguem.toLowerCase().includes(termoBusca));
-                return bateTipo && bateBusca;
+            const sugestoesCount = registros.filter(r => r.tipo === 'sugerir').length;
+            const elogiosCount = registros.filter(r => r.tipo === 'elogiar').length;
+
+            document.getElementById('admin-count-sugestoes').innerText = sugestoesCount;
+            document.getElementById('admin-count-elogios').innerText = elogiosCount;
+            document.getElementById('total-registros-admin').innerText = registros.length;
+
+            const filtrados = registros.filter(reg => {
+                const matchTipo = (filtroTipo === 'todos' || reg.tipo === filtroTipo);
+                const matchBusca = (
+                    reg.nome.toLowerCase().includes(busca) ||
+                    reg.local.toLowerCase().includes(busca) ||
+                    reg.descricao.toLowerCase().includes(busca) ||
+                    (reg.alguem && reg.alguem.toLowerCase().includes(busca))
+                );
+                return matchTipo && matchBusca;
             });
-
-            // Atualizar Métricas
-            document.getElementById('admin-count-sugestoes').innerText = registros.filter(r => r.tipo === 'sugerir').length;
-            document.getElementById('admin-count-elogios').innerText = registros.filter(r => r.tipo === 'elogiar').length;
-            document.getElementById('total-registros-admin').innerText = filtrados.length;
 
             if (filtrados.length === 0) {
                 container.innerHTML = `
-                    <div class="bg-white p-8 rounded-2xl text-center text-slate-400 border border-slate-200">
-                        <i class="fa-regular fa-folder-open text-4xl mb-2"></i>
-                        <p class="text-sm font-medium">Nenhum registro armazenado no momento.</p>
+                    <div class="text-center py-12 bg-white rounded-2xl border border-slate-200">
+                        <i class="fa-solid fa-folder-open text-3xl text-slate-300 mb-2"></i>
+                        <p class="text-sm text-slate-500 font-medium">Nenhum registro encontrado.</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = filtrados.map(item => {
-                const isSugestao = item.tipo === 'sugerir';
-                const tagBg = isSugestao ? 'bg-purple-100 text-brand-dark border-purple-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                const icon = isSugestao ? 'fa-lightbulb text-purple-600' : 'fa-heart text-emerald-600';
-
+            container.innerHTML = filtrados.map(reg => {
+                const isSugestao = reg.tipo === 'sugerir';
+                const badgeColor = isSugestao ? 'bg-purple-100 text-brand-dark' : 'bg-emerald-100 text-emerald-800';
+                const iconType = isSugestao ? 'fa-lightbulb text-brand-accent' : 'fa-heart text-emerald-600';
+                
                 return `
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow transition-all text-xs space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow transition-shadow flex flex-col gap-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
                             <div class="flex items-center gap-2">
-                                <span class="px-3 py-1 rounded-full font-bold border ${tagBg} flex items-center gap-1.5 text-[11px]">
-                                    <i class="fa-solid ${icon}"></i>
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 ${badgeColor}">
+                                    <i class="fa-solid ${iconType}"></i>
                                     ${isSugestao ? 'Sugestão' : 'Elogio'}
                                 </span>
-                                <span class="font-bold text-slate-800 text-sm">${item.local}</span>
+                                <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded-md">
+                                    <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> ${reg.local}
+                                </span>
                             </div>
-                            <span class="text-slate-400 font-mono text-[11px]"><i class="fa-regular fa-clock mr-1"></i>${item.data}</span>
+                            <span class="text-[11px] text-slate-400 font-medium">
+                                <i class="fa-regular fa-clock mr-1"></i>${reg.data}
+                            </span>
                         </div>
 
-                        ${!isSugestao && item.alguem !== 'Não especificado' ? `
-                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-600">
-                                <strong>Pessoa/Equipe identificada:</strong> ${item.alguem}
+                        <div class="text-xs sm:text-sm text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100/80 leading-relaxed">
+                            <strong class="text-slate-900 block mb-1 text-[11px] uppercase tracking-wider">Descrição:</strong>
+                            ${reg.descricao}
+                        </div>
+
+                        ${!isSugestao && reg.alguem && reg.alguem !== 'Não especificado' ? `
+                            <div class="text-xs text-emerald-700 bg-emerald-50/60 px-3 py-1.5 rounded-lg border border-emerald-100 flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-tag text-emerald-500"></i>
+                                <span><strong>Colaborador(a) / Equipe:</strong> ${reg.alguem}</span>
                             </div>
                         ` : ''}
 
-                        <div>
-                            <p class="text-slate-700 leading-relaxed font-sans text-xs sm:text-sm bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                "${item.descricao}"
-                            </p>
-                        </div>
-
-                        <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-slate-500 text-[11px]">
-                            <div class="flex items-center gap-3">
-                                <span><i class="fa-solid fa-user text-slate-400 mr-1"></i><strong>${item.nome}</strong></span>
-                                <span><i class="fa-solid fa-envelope text-slate-400 mr-1"></i>${item.email}</span>
-                                <span><i class="fa-solid fa-phone text-slate-400 mr-1"></i>${item.telefone}</span>
+                        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs text-slate-500">
+                            <div class="flex items-center gap-4">
+                                <span><i class="fa-solid fa-user text-slate-400 mr-1"></i><strong>${reg.nome}</strong></span>
+                                <span><i class="fa-solid fa-envelope text-slate-400 mr-1"></i>${reg.email}</span>
+                                <span><i class="fa-solid fa-phone text-slate-400 mr-1"></i>${reg.telefone}</span>
                             </div>
-                            <button onclick="excluirItemAdmin(${item.id})" class="text-red-500 hover:text-red-700 font-semibold cursor-pointer hover:underline">
-                                Excluir
+                            <button onclick="excluirRegistro(${reg.id})" class="text-red-500 hover:text-red-700 p-1 rounded transition-colors cursor-pointer" title="Excluir item">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
                             </button>
                         </div>
                     </div>
@@ -592,15 +588,16 @@
             }).join('');
         }
 
-        function excluirItemAdmin(id) {
-            registros = registros.filter(r => r.id !== id);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
-            renderizarTabelaAdmin();
+        function excluirRegistro(id) {
+            if (confirm('Tem certeza que deseja excluir este registro?')) {
+                registros = registros.filter(r => r.id !== id);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+                renderizarTabelaAdmin();
+            }
         }
 
         function limparHistoricoAdmin() {
-            if (registros.length === 0) return;
-            if (confirm("Tem certeza que deseja apagar permanentemente todas as sugestões e elogios salvos?")) {
+            if (confirm('ATENÇÃO: Deseja realmente apagar TODOS os registros salvos? Esta ação não pode ser desfeita.')) {
                 registros = [];
                 localStorage.removeItem(STORAGE_KEY);
                 renderizarTabelaAdmin();
