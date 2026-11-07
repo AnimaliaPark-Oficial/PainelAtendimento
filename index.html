@@ -446,6 +446,7 @@ async function handleFormSubmit(event, tipo) {
             try {
                 await fetch(URL_DO_POWER_AUTOMATE, {
                     method: 'POST',
+                    mode: 'no-cors', // Evita bloqueio de segurança no Navegador
                     headers: {
                         'Content-Type': 'application/json'
                     },
