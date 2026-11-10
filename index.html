@@ -70,15 +70,14 @@
     <header class="bg-gradient-to-r from-brand-darker via-brand-dark to-brand-main text-white shadow-lg relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
         <div class="max-w-4xl mx-auto px-4 py-6 sm:py-8 relative z-10 text-center">
+            <!-- BOTÃO: voltar ao mapa -->
+            <div id="voltar-mapa" class="flex justify-start mb-3" style="display: none;">
+                <a href="/" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-full transition-colors">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Voltar ao mapa</span>
+                </a>
+            </div>
             <div class="flex flex-col items-center justify-center gap-3">
-
-                    <!-- BOTÃO: voltar ao mapa -->
-    <div class="flex justify-start mb-3">
-        <a href="/" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-full transition-colors">
-            <i class="fa-solid fa-arrow-left"></i>
-            <span>Voltar ao mapa</span>
-        </a>
-    </div>
                 <!-- LOGO DO PARQUE -->
                 <div class="h-16 flex items-center justify-center overflow-hidden">
                     <img src="logo.png" alt="Animália Park" class="max-h-full w-auto object-contain drop-shadow">
@@ -793,6 +792,16 @@
             a.remove();
             setTimeout(() => URL.revokeObjectURL(a.href), 1000);
         }
+        // Mostra "Voltar ao mapa" só para quem chegou pelo botão do mapa (link com ?origem=mapa)
+        (function () {
+            let veioDoMapa = false;
+            try {
+                veioDoMapa = new URLSearchParams(location.search).get('origem') === 'mapa';
+                if (veioDoMapa) sessionStorage.setItem('veio_do_mapa', '1');
+                else veioDoMapa = sessionStorage.getItem('veio_do_mapa') === '1';
+            } catch (e) {}
+            if (veioDoMapa) document.getElementById('voltar-mapa').style.display = 'flex';
+        })();
     </script>
 </body>
 </html>
