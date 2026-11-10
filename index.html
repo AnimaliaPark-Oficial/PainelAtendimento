@@ -355,20 +355,100 @@
             <!-- Rodapé Admin -->
             <div class="p-4 bg-white border-t border-slate-200 flex items-center justify-between text-xs">
                 <span class="text-slate-400">Total de Registros: <strong id="total-registros-admin" class="text-slate-700">0</strong></span>
-                <button onclick="limparHistoricoAdmin()" class="text-red-600 hover:text-red-700 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors cursor-pointer">
-                    <i class="fa-solid fa-trash-can"></i>
-                    <span>Excluir Todos os Dados</span>
-                </button>
+                <div class="flex items-center gap-1">
+                    <button onclick="exportarCSV()" class="text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors cursor-pointer">
+                        <i class="fa-solid fa-file-excel"></i>
+                        <span>Exportar para Excel</span>
+                    </button>
+                    <button onclick="limparHistoricoAdmin()" class="text-red-600 hover:text-red-700 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors cursor-pointer">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Excluir Todos os Dados</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Scripts JS -->
     <script>
-        const STORAGE_KEY = 'painel_atendimento_registros_v2';
-        const SENHA_MESTRE = 'admin123';
-        
-        let registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        // ====== CONFIGURAÇÃO DO BANCO (Supabase) ======
+        // Preencha os 3 valores abaixo (veja o passo a passo). A chave "anon" é pública
+        // por design: quem protege os dados são as regras de segurança do banco.
+        const SUPABASE_URL = 'https://gamdvgosiuoiekvvpokv.supabase.co/rest/v1/';        // ex.: https://abcdxyz.supabase.co
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhbWR2Z29zaXVvaWVrdnZwb2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyOTM5NjksImV4cCI6MjEwOTg2OTk2OX0.Qh3kNSnsYEgwUaUeVCs3jCxWDyGwjjki-dv4p4F3qmU';   // chave "anon public"
+        const ADMIN_EMAIL = 'lucas.satirio@animaliapark.com.br';         // e-mail da conta do gestor (a senha é digitada no painel)
+        const PENDENTES_KEY = 'painel_atendimento_pendentes_v1';
+
+        const configurado = () => !!(SUPABASE_URL && SUPABASE_ANON_KEY && ADMIN_EMAIL);
+        let registros = [];
+        let adminToken = null; // só em memória: fechou a página, pede a senha de novo
+
+        function esc(v) {
+            return String(v == null ? '' : v)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function novoUuid() {
+            if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        }
+
+        function paraLinhaDoBanco(r) {
+            const cortar = (v, n) => String(v == null ? '' : v).slice(0, n);
+            return {
+                id_cliente: r.id_cliente,
+                tipo: r.tipo,
+                lugar: cortar(r.local, 200),
+                descricao: cortar(r.descricao, 2000),
+                nome: cortar(r.nome, 200),
+                email: cortar(r.email, 200),
+                telefone: cortar(r.telefone, 50),
+                alguem: cortar(r.alguem, 200)
+            };
+        }
+
+        // Envia um cadastro para o banco. Se falhar (sem internet etc.), guarda numa fila
+        // no aparelho do visitante e tenta de novo na próxima vez que a página abrir.
+        async function enviarParaNuvem(registro) {
+            if (!configurado()) return false;
+            try {
+                const resp = await fetch(`${SUPABASE_URL}/rest/v1/registros`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(paraLinhaDoBanco(registro))
+                });
+                // 409 = esse id_cliente já foi gravado antes (reenvio): conta como sucesso
+                if (resp.ok || resp.status === 409) return true;
+                throw new Error('status ' + resp.status);
+            } catch (e) {
+                try {
+                    const fila = JSON.parse(localStorage.getItem(PENDENTES_KEY)) || [];
+                    if (!fila.some(x => x.id_cliente === registro.id_cliente)) fila.push(registro);
+                    localStorage.setItem(PENDENTES_KEY, JSON.stringify(fila));
+                } catch (e2) {}
+                return false;
+            }
+        }
+
+        function reenviarPendentes() {
+            if (!configurado()) return;
+            let fila = [];
+            try { fila = JSON.parse(localStorage.getItem(PENDENTES_KEY)) || []; } catch (e) {}
+            if (!fila.length) return;
+            localStorage.removeItem(PENDENTES_KEY);
+            fila.forEach(r => enviarParaNuvem(r));
+        }
+        window.addEventListener('load', reenviarPendentes);
+        window.addEventListener('online', reenviarPendentes);
 
         function switchTab(tab) {
             const tabSugerir = document.getElementById('tab-sugerir');
@@ -406,7 +486,7 @@
             event.preventDefault();
 
             let novoRegistro = {
-                id: Date.now(),
+                id_cliente: novoUuid(),
                 tipo: tipo,
                 data: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
             };
@@ -433,10 +513,9 @@
                 novoRegistro.telefone = document.getElementById('tel-elogiador').value || 'Não informado';
             }
 
-            // Salva no navegador local (painel admin)
-            registros.unshift(novoRegistro);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
-            
+            // Grava no banco (se falhar, entra na fila e é reenviado depois)
+            enviarParaNuvem(novoRegistro);
+
             // Exibe o modal de sucesso para o visitante
             abrirModalSucesso(tipo);
 
@@ -489,19 +568,79 @@
             document.getElementById('modal-auth-admin').classList.add('opacity-0', 'pointer-events-none');
         }
 
-        function autenticarAdmin(event) {
+        async function autenticarAdmin(event) {
             event.preventDefault();
             const senhaDigitada = document.getElementById('senha-admin').value;
+            const erro = document.getElementById('erro-senha');
+            erro.classList.add('hidden');
 
-            if (senhaDigitada === SENHA_MESTRE) {
+            if (!configurado()) {
+                alert('O banco de dados ainda não foi configurado neste site.');
+                return;
+            }
+            try {
+                const resp = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: ADMIN_EMAIL, password: senhaDigitada })
+                });
+                if (!resp.ok) throw new Error('login');
+                adminToken = (await resp.json()).access_token;
+                document.getElementById('senha-admin').value = '';
                 fecharModalAuthAdmin();
-                abrirPainelAdmin();
-            } else {
-                document.getElementById('erro-senha').classList.remove('hidden');
+                await abrirPainelAdmin();
+            } catch (e) {
+                erro.classList.remove('hidden');
             }
         }
 
-        function abrirPainelAdmin() {
+        function cabecalhosAdmin(extra) {
+            return Object.assign({ 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${adminToken}` }, extra || {});
+        }
+
+        function sessaoExpirou() {
+            adminToken = null;
+            fecharPainelAdmin();
+            abrirModalAuthAdmin();
+        }
+
+        async function carregarRegistros() {
+            const todos = [];
+            const passo = 1000;
+            for (let ini = 0; ; ini += passo) {
+                const resp = await fetch(`${SUPABASE_URL}/rest/v1/registros?select=*&order=criado_em.desc,id.desc`, {
+                    headers: cabecalhosAdmin({ 'Range-Unit': 'items', 'Range': `${ini}-${ini + passo - 1}` })
+                });
+                if (resp.status === 401 || resp.status === 403) { sessaoExpirou(); return false; }
+                if (!resp.ok) throw new Error('status ' + resp.status);
+                const lote = await resp.json();
+                todos.push(...lote);
+                if (lote.length < passo) break;
+            }
+            registros = todos.map(x => ({
+                id: x.id,
+                tipo: x.tipo,
+                local: x.lugar || '',
+                descricao: x.descricao || '',
+                nome: x.nome || 'Não informado',
+                email: x.email || 'Não informado',
+                telefone: x.telefone || 'Não informado',
+                alguem: x.alguem || '',
+                data: new Date(x.criado_em).toLocaleString('pt-BR', {
+                    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+                    timeZone: 'America/Sao_Paulo'
+                })
+            }));
+            return true;
+        }
+
+        async function abrirPainelAdmin() {
+            try {
+                if (!(await carregarRegistros())) return;
+            } catch (e) {
+                alert('Não foi possível carregar os registros. Verifique a conexão e tente novamente.');
+                return;
+            }
             renderizarTabelaAdmin();
             document.getElementById('modal-painel-admin').classList.remove('opacity-0', 'pointer-events-none');
         }
@@ -557,31 +696,31 @@
                                     ${isSugestao ? 'Sugestão' : 'Elogio'}
                                 </span>
                                 <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded-md">
-                                    <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> ${reg.local}
+                                    <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> ${esc(reg.local)}
                                 </span>
                             </div>
                             <span class="text-[11px] text-slate-400 font-medium">
-                                <i class="fa-regular fa-clock mr-1"></i>${reg.data}
+                                <i class="fa-regular fa-clock mr-1"></i>${esc(reg.data)}
                             </span>
                         </div>
 
                         <div class="text-xs sm:text-sm text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100/80 leading-relaxed">
                             <strong class="text-slate-900 block mb-1 text-[11px] uppercase tracking-wider">Descrição:</strong>
-                            ${reg.descricao}
+                            ${esc(reg.descricao)}
                         </div>
 
                         ${!isSugestao && reg.alguem && reg.alguem !== 'Não especificado' ? `
                             <div class="text-xs text-emerald-700 bg-emerald-50/60 px-3 py-1.5 rounded-lg border border-emerald-100 flex items-center gap-1.5">
                                 <i class="fa-solid fa-user-tag text-emerald-500"></i>
-                                <span><strong>Colaborador(a) / Equipe:</strong> ${reg.alguem}</span>
+                                <span><strong>Colaborador(a) / Equipe:</strong> ${esc(reg.alguem)}</span>
                             </div>
                         ` : ''}
 
                         <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs text-slate-500">
                             <div class="flex items-center gap-4">
-                                <span><i class="fa-solid fa-user text-slate-400 mr-1"></i><strong>${reg.nome}</strong></span>
-                                <span><i class="fa-solid fa-envelope text-slate-400 mr-1"></i>${reg.email}</span>
-                                <span><i class="fa-solid fa-phone text-slate-400 mr-1"></i>${reg.telefone}</span>
+                                <span><i class="fa-solid fa-user text-slate-400 mr-1"></i><strong>${esc(reg.nome)}</strong></span>
+                                <span><i class="fa-solid fa-envelope text-slate-400 mr-1"></i>${esc(reg.email)}</span>
+                                <span><i class="fa-solid fa-phone text-slate-400 mr-1"></i>${esc(reg.telefone)}</span>
                             </div>
                             <button onclick="excluirRegistro(${reg.id})" class="text-red-500 hover:text-red-700 p-1 rounded transition-colors cursor-pointer" title="Excluir item">
                                 <i class="fa-solid fa-trash-can text-xs"></i>
@@ -592,20 +731,59 @@
             }).join('');
         }
 
-        function excluirRegistro(id) {
-            if (confirm('Tem certeza que deseja excluir este registro?')) {
-                registros = registros.filter(r => r.id !== id);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+        async function excluirRegistro(id) {
+            if (!confirm('Tem certeza que deseja excluir este registro?')) return;
+            try {
+                const resp = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${encodeURIComponent(id)}`, {
+                    method: 'DELETE', headers: cabecalhosAdmin({ 'Prefer': 'return=minimal' })
+                });
+                if (resp.status === 401 || resp.status === 403) return sessaoExpirou();
+                if (!resp.ok) throw new Error('status ' + resp.status);
+                await carregarRegistros();
                 renderizarTabelaAdmin();
+            } catch (e) {
+                alert('Não foi possível excluir o registro.');
             }
         }
 
-        function limparHistoricoAdmin() {
-            if (confirm('ATENÇÃO: Deseja realmente apagar TODOS os registros salvos? Esta ação não pode ser desfeita.')) {
+        async function limparHistoricoAdmin() {
+            if (!confirm('ATENÇÃO: Deseja realmente apagar TODOS os registros salvos? Esta ação não pode ser desfeita.')) return;
+            try {
+                const resp = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=gt.0`, {
+                    method: 'DELETE', headers: cabecalhosAdmin({ 'Prefer': 'return=minimal' })
+                });
+                if (resp.status === 401 || resp.status === 403) return sessaoExpirou();
+                if (!resp.ok) throw new Error('status ' + resp.status);
                 registros = [];
-                localStorage.removeItem(STORAGE_KEY);
                 renderizarTabelaAdmin();
+            } catch (e) {
+                alert('Não foi possível apagar os registros.');
             }
+        }
+
+        // Baixa todos os registros como CSV (abre direto no Excel em português)
+        function exportarCSV() {
+            if (!registros.length) { alert('Não há registros para exportar.'); return; }
+            const cel = v => {
+                let s = String(v == null ? '' : v).replace(/\r?\n/g, ' ');
+                // Evita que o Excel trate texto de visitante como fórmula
+                if (/^[=@\t]/.test(s) || (/^[+-]/.test(s) && !/^[+-][\d\s().-]*$/.test(s))) s = "'" + s;
+                return '"' + s.replace(/"/g, '""') + '"';
+            };
+            const cab = ['Data', 'Tipo', 'Local', 'Descrição', 'Nome', 'E-mail', 'Telefone', 'Colaborador/Equipe (elogio)'];
+            const linhas = registros.map(r => [
+                r.data, r.tipo === 'sugerir' ? 'Sugestão' : 'Elogio', r.local, r.descricao,
+                r.nome, r.email, r.telefone, r.alguem
+            ].map(cel).join(';'));
+            const csv = '﻿' + [cab.map(cel).join(';'), ...linhas].join('\r\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'registros-sav-' + new Date().toISOString().slice(0, 10) + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
         }
     </script>
 </body>
