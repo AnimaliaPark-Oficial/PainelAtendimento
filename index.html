@@ -72,7 +72,7 @@
         <div class="max-w-4xl mx-auto px-4 py-6 sm:py-8 relative z-10 text-center">
             <!-- BOTÃO: voltar ao mapa -->
             <div id="voltar-mapa" class="flex justify-start mb-3" style="display: none;">
-                <a href="/" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-full transition-colors">
+                <a href="/" onclick="return voltarAoMapa(event)" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-full transition-colors">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Voltar ao mapa</span>
                 </a>
@@ -792,6 +792,18 @@
             a.remove();
             setTimeout(() => URL.revokeObjectURL(a.href), 1000);
         }
+        // "Voltar ao mapa": se esta aba foi aberta pelo mapa, fecha e deixa o mapa como estava.
+        // Se o navegador não permitir fechar (ou a pessoa entrou direto), vai para o mapa.
+        function voltarAoMapa(e) {
+            if (window.opener && !window.opener.closed) {
+                e.preventDefault();
+                window.close();
+                setTimeout(function () { location.href = '/'; }, 400); // só roda se a aba não fechou
+                return false;
+            }
+            return true;
+        }
+
         // Mostra "Voltar ao mapa" só para quem chegou pelo botão do mapa (link com ?origem=mapa)
         (function () {
             let veioDoMapa = false;
