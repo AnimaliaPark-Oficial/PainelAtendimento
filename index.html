@@ -607,39 +607,26 @@
         async function autenticarAdmin(event) {
             event.preventDefault();
             const senhaDigitada = document.getElementById('senha-admin').value;
-            const erroEl = document.getElementById('erro-senha');
-            erroEl.classList.add('hidden');
+            const erro = document.getElementById('erro-senha');
+            erro.classList.add('hidden');
 
-            let loginSucesso = false;
-
-            for (let emailCorrente of ADMINS_PERMITIDOS) {
-                try {
-                    const resp = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-                        method: 'POST',
-                        headers: {
-                            'apikey': SUPABASE_ANON_KEY,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            email: emailCorrente,
-                            password: senhaDigitada
-                        })
-                    });
-
-                    const data = await resp.json();
-                    if (resp.ok && data.access_token) {
-                        adminToken = data.access_token;
-                        loginSucesso = true;
-                        break;
-                    }
-                } catch (e) {}
+            if (!configurado()) {
+                alert('O banco de dados ainda não foi configurado neste site.');
+                return;
             }
-
-            if (loginSucesso) {
+            try {
+                const resp = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: ADMIN_EMAIL, password: senhaDigitada })
+                });
+                if (!resp.ok) throw new Error('login');
+                adminToken = (await resp.json()).access_token;
+                document.getElementById('senha-admin').value = '';
                 fecharModalAuthAdmin();
-                abrirPainelAdmin();
-            } else {
-                erroEl.classList.remove('hidden');
+                await abrirPainelAdmin();
+            } catch (e) {
+                erro.classList.remove('hidden');
             }
         }
 
