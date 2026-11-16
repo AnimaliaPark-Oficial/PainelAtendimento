@@ -582,7 +582,29 @@
             document.getElementById('modal-auth-admin').classList.add('opacity-0', 'pointer-events-none');
         }
 
-async function autenticarAdmin(event) {
+// ====== CONFIGURAÇÃO DO BANCO (Supabase) ======
+        const SUPABASE_URL = 'https://gamdvgosiuoiekvvpokv.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhbWR2Z29zaXVvaWVrdnZwb2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyOTM5NjksImV4cCI6MjEwOTg2OTk2OX0.Qh3kNSnsYEgwUaUeVCs3jCxWDyGwjjki-dv4p4F3qmU';
+        
+        // Lista de e-mails autorizados a acessar o painel
+        const ADMINS_PERMITIDOS = [
+            'sav@animaliapark.com.br',
+            'lucas.satirio@animaliapark.com.br'
+        ];
+        
+        const PENDENTES_KEY = 'painel_atendimento_pendentes_v1';
+
+        const configurado = () => !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+        let registros = [];
+        let adminToken = null;
+
+        function esc(v) {
+            return String(v == null ? '' : v)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        async function autenticarAdmin(event) {
             event.preventDefault();
             const senhaDigitada = document.getElementById('senha-admin').value;
             const erroEl = document.getElementById('erro-senha');
@@ -590,7 +612,6 @@ async function autenticarAdmin(event) {
 
             let loginSucesso = false;
 
-            // Tenta autenticar no Supabase usando os e-mails permitidos um por um
             for (let emailCorrente of ADMINS_PERMITIDOS) {
                 try {
                     const resp = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
@@ -609,7 +630,7 @@ async function autenticarAdmin(event) {
                     if (resp.ok && data.access_token) {
                         adminToken = data.access_token;
                         loginSucesso = true;
-                        break; // Achou o e-mail correto com essa senha, pode parar o looping
+                        break;
                     }
                 } catch (e) {}
             }
