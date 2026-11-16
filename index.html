@@ -582,28 +582,6 @@
             document.getElementById('modal-auth-admin').classList.add('opacity-0', 'pointer-events-none');
         }
 
-// ====== CONFIGURAÇÃO DO BANCO (Supabase) ======
-        const SUPABASE_URL = 'https://gamdvgosiuoiekvvpokv.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhbWR2Z29zaXVvaWVrdnZwb2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyOTM5NjksImV4cCI6MjEwOTg2OTk2OX0.Qh3kNSnsYEgwUaUeVCs3jCxWDyGwjjki-dv4p4F3qmU';
-        
-        // Lista de e-mails autorizados a acessar o painel
-        const ADMINS_PERMITIDOS = [
-            'sav@animaliapark.com.br',
-            'lucas.satirio@animaliapark.com.br'
-        ];
-        
-        const PENDENTES_KEY = 'painel_atendimento_pendentes_v1';
-
-        const configurado = () => !!(SUPABASE_URL && SUPABASE_ANON_KEY);
-        let registros = [];
-        let adminToken = null;
-
-        function esc(v) {
-            return String(v == null ? '' : v)
-                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        }
-
         async function autenticarAdmin(event) {
             event.preventDefault();
             const senhaDigitada = document.getElementById('senha-admin').value;
